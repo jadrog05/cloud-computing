@@ -1,0 +1,16 @@
+info:
+  title: vm1 template schema
+  author: jaden
+  description: Ensures the template can only deploy if the diskSizeGb property exists
+  version: 1.0
+
+imports:
+- path: vm1.jinja
+
+required:
+- diskSizeGb
+
+properties:
+  diskSizeGb:
+    type: string
+    description: Specifies the size in Gb for the operating system disk

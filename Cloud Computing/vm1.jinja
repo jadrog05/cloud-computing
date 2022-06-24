@@ -1,0 +1,16 @@
+resources:
+- name: vm1
+  type: compute.v1.instance
+  properties:
+    zone: us-central1-a
+    machineType: zones/us-central1-a/machineTypes/n1-standard-1
+    disks:
+    - deviceName: boot #PERSISTENT boot disk created
+      type: PERSISTENT
+      boot: true
+      autoDelete: true
+      initializeParams:
+        sourceImage: projects/debian-cloud/global/images/family/debian-9
+    networkInterfaces:
+    #attach the vm to the network
+    - network: {{ properties["network"] }}

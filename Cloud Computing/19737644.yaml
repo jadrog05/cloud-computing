@@ -1,0 +1,55 @@
+imports:
+- path: network-temp.jinja
+- path: subnetwork-temp.jinja
+- path: firewall-temp.jinja
+- path: jrbucket.jinja
+- path: vm1.jinja
+- path: userssql.jinja
+- path: itemssql.jinja
+
+#creates a network
+resources:
+- name: network
+  type: network-temp.jinja
+
+#creates a subnetwork of the main network
+- name: subnetwork
+  type: subnetwork-temp.jinja
+  properties:
+    ipCidrRange: 10.10.0.0/16
+    network: $(ref.network.selfLink)
+    region: us-central1
+
+#creates a firewall on the network
+- name: firewall
+  type: firewall-temp.jinja
+  properties:
+    network: $(ref.network.selfLink)
+    IPProtocol: TCP
+
+#creates a bucket to store website data
+- name: jrbucket13
+  type: jrbucket.jinja
+
+- name: vm1
+  type: vm1.jinja
+  properties:
+    diskSizeGb: "100"
+    network: $(ref.network.selfLink)
+
+#creates a sql instance to store data such as usernames and items in database.
+- name: userssql13
+  type: userssql.jinja
+  properties:
+    tier: db-g1-small
+    charset: utf8
+    password: testpass
+    hostName: testhost
+
+- name: itemssql13
+  type: itemssql.jinja
+  properties:
+    tier: db-g1-small
+    charset: utf8
+    password: testpass
+    hostName: testhost

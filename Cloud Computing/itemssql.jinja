@@ -1,0 +1,31 @@
+{% set instanceName = env['deployment'] + '-instance' %}
+# DB cannot have things like dashes, so must be simple. It is unique to the
+# instance so is fine in this form.
+{% set dbName = 'mydb_items' %}
+{% set userName = 'testuser_items' %}
+
+resources:
+- name: {{ instanceName }}
+  type: sqladmin.v1beta4.instance
+  properties:
+    settings:
+      tier: {{ properties['tier'] }}
+- name: {{ dbName }}
+  type: sqladmin.v1beta4.database
+  properties:
+    name: {{ dbName }}
+    instance: $(ref.{{ instanceName }}.name)
+    charset: {{ properties['charset'] }}
+- name: {{ userName }}
+  type: sqladmin.v1beta4.user
+  metadata:
+    dependsOn:
+      - {{ dbName }}
+  properties:
+    name: {{ userName }}
+    instance: $(ref.{{ instanceName }}.name)
+    host: {{ properties['hostName'] }}
+    password: {{ properties['password'] }}
+
+    #–------reference--------
+    https://github.com/GoogleCloudPlatform/deploymentmanager-samples/blob/master/google/resource-snippets/sqladmin-v1beta4/cloudsql_with_user.jinja
